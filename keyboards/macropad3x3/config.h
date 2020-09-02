@@ -4,8 +4,8 @@
 #include "config_common.h"
 
 /* USB Device descriptor parameter */
-#define VENDOR_ID       0x0000
-#define PRODUCT_ID      0x0000
+#define VENDOR_ID       0x0801
+#define PRODUCT_ID      0x0801
 #define DEVICE_VER      0x0620
 #define MANUFACTURER    lstubbig
 #define PRODUCT         macropad3x3
