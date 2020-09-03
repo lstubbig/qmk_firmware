@@ -32,19 +32,19 @@ enum custom_keycodes {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     /* Base */
     [_BASE] = LAYOUT(
-        KC_7,   KC_8,   KC_9,
-        KC_4,   KC_5,   KC_6,
-        LT(_NAV, KC_1),   LT(_FN, KC_2),   KC_3
+        KC_7,               KC_8,           KC_9,
+        KC_4,               KC_5,           KC_6,
+        LT(_NAV, KC_1),     LT(_FN, KC_2),  KC_3
     ),
     [_FN] = LAYOUT(
-        QMKBEST,   QMKURL,   HALLO,
-        KC_4,   KC_5,   KC_6,
-        KC_1,   KC_2,   KC_3
+        QMKBEST,    QMKURL,     HALLO,
+        KC_4,       KC_5,       KC_6,
+        KC_1,       KC_2,       KC_3
     ),
     [_NAV] = LAYOUT(
-        KC_HOME,   KC_UP,   KC_BSPACE,
-        KC_LEFT,   KC_DOWN,   KC_RIGHT,
-        KC_1,   KC_END,   KC_ENTER
+        KC_HOME,    KC_UP,      KC_BSPACE,
+        KC_LEFT,    KC_DOWN,    KC_RIGHT,
+        KC_1,       KC_END,     KC_ENTER
     )
 };
 
