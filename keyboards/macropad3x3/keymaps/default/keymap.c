@@ -18,13 +18,15 @@
 // Defines names for use in layer keycodes and the keymap
 enum layer_names {
     _BASE,
-    _FN
+    _FN,
+    _NAV
 };
 
 // Defines the keycodes used by our macros in process_record_user
 enum custom_keycodes {
     QMKBEST = SAFE_RANGE,
-    QMKURL
+    QMKURL,
+    HALLO
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -32,12 +34,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_BASE] = LAYOUT(
         KC_7,   KC_8,   KC_9,
         KC_4,   KC_5,   KC_6,
-        KC_1,   KC_2,   KC_3
+        LT(_NAV, KC_1),   LT(_FN, KC_2),   KC_3
     ),
     [_FN] = LAYOUT(
-        KC_7,   KC_8,   KC_9,
+        QMKBEST,   QMKURL,   HALLO,
         KC_4,   KC_5,   KC_6,
         KC_1,   KC_2,   KC_3
+    ),
+    [_NAV] = LAYOUT(
+        KC_HOME,   KC_UP,   KC_BSPACE,
+        KC_LEFT,   KC_DOWN,   KC_RIGHT,
+        KC_1,   KC_END,   KC_ENTER
     )
 };
 
@@ -55,6 +62,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 // when keycode QMKURL is pressed
                 SEND_STRING("https://qmk.fm/\n");
+            } else {
+                // when keycode QMKURL is released
+            }
+            break;
+        case HALLO:
+            if (record->event.pressed) {
+                // when keycode QMKURL is pressed
+                SEND_STRING("Hello there!\n");
             } else {
                 // when keycode QMKURL is released
             }
