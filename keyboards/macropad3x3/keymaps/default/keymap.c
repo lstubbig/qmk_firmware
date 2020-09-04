@@ -59,7 +59,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_Media] = LAYOUT(
         KC_MUTE,    KC_AUDIO_VOL_DOWN,      KC_AUDIO_VOL_UP,
         _______,    KC_MEDIA_PREV_TRACK,    KC_MEDIA_NEXT_TRACK,
-        _______,    KC_MEDIA_PLAY_PAUSE,    KC_MEDIA_PLAY_PAUSE,
+        _______,    KC_SPACE,               KC_MEDIA_PLAY_PAUSE,
         _______
     )
 };
