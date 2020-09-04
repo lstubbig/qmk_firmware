@@ -35,27 +35,32 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_BASE] = LAYOUT(
         KC_7,               KC_8,           KC_9,
         LT(_Media, KC_4),   KC_5,           KC_6,
-        LT(_NAV, KC_1),     LT(_FN, KC_2),  LT(_Mouse, KC_3)
+        LT(_NAV, KC_1),     LT(_FN, KC_2),  LT(_Mouse, KC_3),
+        KC_MUTE
     ),
     [_FN] = LAYOUT(
         QMKBEST,    QMKURL,     HALLO,
         KC_0,       KC_0,       KC_0,
-        KC_0,       _______,    KC_0
+        KC_0,       _______,    KC_0,
+        _______
     ),
     [_NAV] = LAYOUT(
         KC_HOME,    KC_UP,      KC_BSPACE,
         KC_LEFT,    KC_DOWN,    KC_RIGHT,
-        _______,    KC_END,     KC_ENTER
+        _______,    KC_END,     KC_ENTER,
+        _______
     ),
     [_Mouse] = LAYOUT(
         KC_MS_BTN1,    KC_MS_UP,      KC_MS_BTN2,
         KC_MS_LEFT,    KC_MS_DOWN,    KC_MS_RIGHT,
-        KC_ENTER,      KC_MS_BTN3,    _______
+        KC_ENTER,      KC_MS_BTN3,    _______,
+        _______
     ),
     [_Media] = LAYOUT(
         KC_MUTE,    KC_AUDIO_VOL_DOWN,      KC_AUDIO_VOL_UP,
         _______,    KC_MEDIA_PREV_TRACK,    KC_MEDIA_NEXT_TRACK,
-        _______,    KC_MEDIA_PLAY_PAUSE,    KC_MEDIA_PLAY_PAUSE
+        _______,    KC_MEDIA_PLAY_PAUSE,    KC_MEDIA_PLAY_PAUSE,
+        _______
     )
 };
 
@@ -103,21 +108,5 @@ void encoder_update_user(uint8_t index, bool clockwise) {
         } else {
             tap_code(KC_UP);
         }
-    }
-}
-
-// used for encoder button
-void dip_switch_update_user(uint8_t index, bool active) { 
-switch (index) {
-    case 0:		// First encoder
-        if(active)
-		{ 
-			tap_code(KC_MUTE);
-		} 
-	    else //ENC0 released
-        {
-			//do nothing
-		}
-        break;
     }
 }
