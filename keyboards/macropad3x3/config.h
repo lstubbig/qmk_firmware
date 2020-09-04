@@ -42,10 +42,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #define MATRIX_ROW_PINS { F7, F6, F5 }
 #define MATRIX_COL_PINS { F0, F1, F4 }
-#define UNUSED_PINS { D0, D1, D2, D3, D4, D5, D6, D7 }
+// Port D broken out to pin header
+// #define UNUSED_PINS { D0, D1, D2, D3, D4, D5, D6, D7 }  
 
-#define QMK_ESC_OUTPUT F7
-#define QMK_ESC_INPUT F0
+// Exiting bootloader doesn't work, JTAG interference? Disabled with fuses
+#define QMK_ESC_INPUT F5
+#define QMK_ESC_OUTPUT F4
+
+// Encoder setup
+#define ENCODERS_PAD_A { D0 }
+#define ENCODERS_PAD_B { D1 }
+#define ENCODER_RESOLUTION 4
+#define DIP_SWITCH_PINS { D3 }  // badly debounced
 
 /* COL2ROW, ROW2COL */
 #define DIODE_DIRECTION COL2ROW

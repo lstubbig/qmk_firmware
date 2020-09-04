@@ -19,7 +19,9 @@
 enum layer_names {
     _BASE,
     _FN,
-    _NAV
+    _NAV,
+    _Mouse,
+    _Media
 };
 
 // Defines the keycodes used by our macros in process_record_user
@@ -30,21 +32,30 @@ enum custom_keycodes {
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    /* Base */
     [_BASE] = LAYOUT(
         KC_7,               KC_8,           KC_9,
-        KC_4,               KC_5,           KC_6,
-        LT(_NAV, KC_1),     LT(_FN, KC_2),  KC_3
+        LT(_Media, KC_4),   KC_5,           KC_6,
+        LT(_NAV, KC_1),     LT(_FN, KC_2),  LT(_Mouse, KC_3)
     ),
     [_FN] = LAYOUT(
         QMKBEST,    QMKURL,     HALLO,
-        KC_4,       KC_5,       KC_6,
-        KC_1,       KC_2,       KC_3
+        KC_0,       KC_0,       KC_0,
+        KC_0,       _______,    KC_0
     ),
     [_NAV] = LAYOUT(
         KC_HOME,    KC_UP,      KC_BSPACE,
         KC_LEFT,    KC_DOWN,    KC_RIGHT,
-        KC_1,       KC_END,     KC_ENTER
+        _______,    KC_END,     KC_ENTER
+    ),
+    [_Mouse] = LAYOUT(
+        KC_MS_BTN1,    KC_MS_UP,      KC_MS_BTN2,
+        KC_MS_LEFT,    KC_MS_DOWN,    KC_MS_RIGHT,
+        KC_ENTER,      KC_MS_BTN3,    _______
+    ),
+    [_Media] = LAYOUT(
+        KC_MUTE,    KC_AUDIO_VOL_DOWN,      KC_AUDIO_VOL_UP,
+        _______,    KC_MEDIA_PREV_TRACK,    KC_MEDIA_NEXT_TRACK,
+        _______,    KC_MEDIA_PLAY_PAUSE,    KC_MEDIA_PLAY_PAUSE
     )
 };
 
@@ -69,11 +80,44 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case HALLO:
             if (record->event.pressed) {
                 // when keycode QMKURL is pressed
-                SEND_STRING("Hello there!\n");
+                SEND_STRING("Hello there.");
             } else {
                 // when keycode QMKURL is released
             }
             break;
     }
     return true;
+};
+
+// encoder functions
+void encoder_update_user(uint8_t index, bool clockwise) {
+    if (index == 0) { /* First encoder */
+        if (clockwise) {
+            tap_code(KC_AUDIO_VOL_UP);
+        } else {
+            tap_code(KC_AUDIO_VOL_DOWN);
+        }
+    } else if (index == 1) { /* Second encoder */
+        if (clockwise) {
+            tap_code(KC_DOWN);
+        } else {
+            tap_code(KC_UP);
+        }
+    }
+}
+
+// used for encoder button
+void dip_switch_update_user(uint8_t index, bool active) { 
+switch (index) {
+    case 0:		// First encoder
+        if(active)
+		{ 
+			tap_code(KC_MUTE);
+		} 
+	    else //ENC0 released
+        {
+			//do nothing
+		}
+        break;
+    }
 }
