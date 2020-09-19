@@ -40,19 +40,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *                  ROW2COL = ROW = Anode (+), COL = Cathode (-, marked on diode)
  *
  */
-#define MATRIX_ROW_PINS { F7, F6, F5, D2 }
-#define MATRIX_COL_PINS { F0, F1, F4, D3 }
+#define MATRIX_ROW_PINS { F7, F6, F5  }
+#define MATRIX_COL_PINS { F0, F1, F4  }
 // Port D broken out to pin header
 // #define UNUSED_PINS { D0, D1, D2, D3, D4, D5, D6, D7 }  
 
-// Exiting bootloader doesn't work, JTAG interference? Disabled with fuses
+// Exiting bootloader doesn't work, JTAG interference? Should be disabled with fuses
 #define QMK_ESC_INPUT D2
 #define QMK_ESC_OUTPUT D3
 
 // Encoder setup
-#define ENCODERS_PAD_A { D0 }
-#define ENCODERS_PAD_B { D1 }
-#define ENCODER_RESOLUTION 4
+// #define ENCODERS_PAD_A { D0 }
+// #define ENCODERS_PAD_B { D1 }
+// #define ENCODER_RESOLUTION 4
 
 /* COL2ROW, ROW2COL */
 #define DIODE_DIRECTION COL2ROW
