@@ -25,3 +25,5 @@ BLUETOOTH_ENABLE = no       # Enable Bluetooth
 AUDIO_ENABLE = no           # Audio output
 ENCODER_ENABLE = yes
 DIP_SWITCH_ENABLE = no
+OLED_DRIVER_ENABLE = yes
+OLED_ROTATION_180 = yes
