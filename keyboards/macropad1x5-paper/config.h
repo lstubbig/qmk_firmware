@@ -33,17 +33,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* Keyboard Matrix Assignments */
 #define DIRECT_PINS { \
-    { B6, E6, D4, C6, D7} \
+    { D2, B6, B2, B3, B1} \
 }
 
-// encoder
-#define ENCODERS_PAD_A { B4 }
-#define ENCODERS_PAD_B { B5 }
+#define ENCODERS_PAD_A { D0, F5 }
+#define ENCODERS_PAD_B { D1, F6 }
 #define ENCODER_RESOLUTION 4
-
-// backlight
-#define BACKLIGHT_PIN F7
-#define BACKLIGHT_LEVELS 5
 
 /* Debounce reduces chatter (unintended double-presses) - set 0 if debouncing is not needed */
 #define DEBOUNCE 5
