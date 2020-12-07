@@ -21,6 +21,7 @@ enum layer_names {
     _Base,
     _Fn,
     _Nav,
+    _Nav2,
     _Mouse
 };
 
@@ -50,6 +51,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         LCTL(LALT(KC_V)),    KC_ENTER,   _______,
         _______
     ),
+    [_Nav2] = LAYOUT(
+        LALT(KC_TAB),   _______,    _______,
+        _______,        _______,    _______,
+        _______,        _______,    _______,
+        _______
+    ),
     [_Mouse] = LAYOUT(
         KC_MS_BTN1,    KC_MS_UP,      KC_MS_BTN2,
         KC_MS_LEFT,    KC_MS_DOWN,    KC_MS_RIGHT,
@@ -59,7 +66,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_Media] = LAYOUT(
         KC_MUTE,    KC_AUDIO_VOL_DOWN,      KC_AUDIO_VOL_UP,
         KC_S,       KC_MEDIA_PREV_TRACK,    KC_MEDIA_NEXT_TRACK,
-        KC_F,       KC_SPACE,               LT(_Nav, KC_MEDIA_PLAY_PAUSE),
+        KC_F,       LT(_Nav2, KC_SPACE),               LT(_Nav, KC_MEDIA_PLAY_PAUSE),
         _______
     )
 };
