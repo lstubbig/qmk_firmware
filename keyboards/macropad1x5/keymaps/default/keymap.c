@@ -15,12 +15,18 @@
  */
 #include QMK_KEYBOARD_H
 
+// Defines names for use in layer keycodes and the keymap
+enum layer_names {
+    _Media,
+    _BL,
+};
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [0] = LAYOUT(
-        BL_TOGG, KC_MUTE, KC_MPRV, KC_MNXT, KC_MPLY
+    [_Media] = LAYOUT(
+        _______, LT(_BL, KC_MUTE), KC_MPRV, KC_MNXT, KC_MPLY
     ),
-    [1] = LAYOUT(
-        BL_TOGG, KC_LEFT, KC_DOWN, KC_UP, KC_RIGHT
+    [_BL] = LAYOUT(
+        _______, _______, BL_DEC, BL_INC, BL_BRTG
     ),
 };
 
