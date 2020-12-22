@@ -1,12 +1,12 @@
 # pikatea
 
-![pikatea](imgur.com image replace me!)
+![pikatea](https://imgur.com/UpcSHLi)
 
-*A short description of the keyboard/project*
+*5 keys and a knob mounted to an underside surface*
 
 * Keyboard Maintainer: [Jack Kester](https://github.com/yourusername)
-* Hardware Supported: *The PCBs, controllers supported*
-* Hardware Availability: *Links to where you can find this hardware*
+* Hardware Supported: *M32u4*
+* Hardware Availability: *http://www.pikatea.com*
 
 Make example for this keyboard (after setting up your build environment):
 
