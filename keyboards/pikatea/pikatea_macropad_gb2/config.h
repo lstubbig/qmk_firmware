@@ -20,11 +20,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "config_common.h"
 
 /* USB Device descriptor parameter */
-#define VENDOR_ID    0xEEDE
+#define VENDOR_ID    0x5049
 #define PRODUCT_ID   0x0001
 #define DEVICE_VER   0x0001
-#define MANUFACTURER Jack Kester
-#define PRODUCT      pikatea
+#define MANUFACTURER Jack_Kester
+#define PRODUCT      Pikatea Macropad
 
 /* key matrix size */
 #define MATRIX_ROWS 1
@@ -46,8 +46,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /* COL2ROW, ROW2COL */
 #define DIODE_DIRECTION COL2ROW
-
-
 
 /*
  * Split Keyboard specific options, make sure you have 'SPLIT_KEYBOARD = yes' in your rules.mk, and define SOFT_SERIAL_PIN.
@@ -154,5 +152,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define NO_ACTION_FUNCTION
 
 /* Bootmagic Lite key configuration */
-//#define BOOTMAGIC_LITE_ROW 0
-//#define BOOTMAGIC_LITE_COLUMN 0
+#define BOOTMAGIC_LITE_ROW 0
+#define BOOTMAGIC_LITE_COLUMN 0

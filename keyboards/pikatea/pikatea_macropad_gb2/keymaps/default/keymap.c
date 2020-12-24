@@ -16,8 +16,9 @@
 #include QMK_KEYBOARD_H
 
 // Defines names for use in layer keycodes and the keymap
-enum layer_names {
-    _BASE
+enum layer_number {
+    _BASE,
+    _LOWER,
 };
 
 // Defines the keycodes used by our macros in process_record_user
@@ -27,9 +28,12 @@ enum layer_names {
 // };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-[_BASE] = LAYOUT(
-        KC_1,       KC_2,      KC_MEDIA_PREV_TRACK,       KC_MEDIA_PLAY_PAUSE, KC_MEDIA_NEXT_TRACK, KC_6
-    )
+    [_BASE] = LAYOUT_all(
+        KC_1,   KC_2,   KC_MEDIA_PREV_TRACK,    KC_MEDIA_PLAY_PAUSE,    KC_MEDIA_NEXT_TRACK,    KC_6
+    ),
+    [_LOWER] = LAYOUT_all(
+        KC_TRNS,   KC_TRNS,   KC_TRNS,    KC_TRNS,    KC_TRNS,    KC_TRNS
+    )   
 };
 
 
