@@ -1,6 +1,6 @@
 # macropad3x3
 
-![macropad3x3](imgur.com image replace me!)
+![macropad3x3](https://i.redd.it/ttnrvcuf7qr51.jpg)
 
 *A short description of the keyboard/project*
 
