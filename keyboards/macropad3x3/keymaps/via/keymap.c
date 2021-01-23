@@ -1,4 +1,4 @@
-/* Copyright 2020 Leon Stubbig <leonstubbig@web.de>
+/* Copyright 2021 Leon Stubbig
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,30 +18,30 @@
 // Defines names for use in layer keycodes and the keymap
 enum layer_names {
     _Media,
-    _BL,
+    _Nav,
+    _FN,
+    _FN2
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_Media] = LAYOUT(
-        _______, LCTL(LSFT(LALT(KC_M))), KC_MPRV, KC_MNXT, KC_MPLY
+        KC_MUTE,    KC_AUDIO_VOL_DOWN,      KC_AUDIO_VOL_UP,
+        KC_S,       KC_MEDIA_PREV_TRACK,    KC_MEDIA_NEXT_TRACK,
+        KC_F,       KC_SPACE,               LT(_Nav, KC_MEDIA_PLAY_PAUSE)
     ),
-    [_BL] = LAYOUT(
-        _______, _______, BL_DEC, BL_INC, BL_BRTG
+    [_Nav] = LAYOUT(
+        KC_HOME,            KC_UP,      KC_END,
+        KC_LEFT,            KC_DOWN,    KC_RIGHT,
+        LCTL(LALT(KC_V)),   KC_ENTER,   _______
     ),
+    [_FN] = LAYOUT(
+        _______,    _______,    _______,
+        _______,    _______,    _______,
+        _______,    _______,    _______
+    ),
+    [_FN2] = LAYOUT(
+        _______,    _______,    _______,
+        _______,    _______,    _______,
+        _______,    _______,    _______
+    )
 };
-
-void encoder_update_user(uint8_t index, bool clockwise) {
-    if (index == 0) { /* First encoder */
-        if (clockwise) {
-            tap_code(KC_AUDIO_VOL_UP);
-        } else {
-            tap_code(KC_AUDIO_VOL_DOWN);
-        }
-    } else if (index == 1) { /* Second encoder */
-        if (clockwise) {
-            tap_code(KC_AUDIO_VOL_UP);
-        } else {
-            tap_code(KC_AUDIO_VOL_DOWN);
-        }
-    }
-}
