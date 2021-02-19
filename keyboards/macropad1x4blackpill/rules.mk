@@ -1,6 +1,10 @@
-# Build Options
-#   change yes to no to disable
-#
+# MCU name
+MCU = STM32F411
+BOOTLOADER = stm32-dfu
+STM32_BOOTLOADER_ADDRESS = 0x1FFF0000
+KEYBOARD_SHARED_EP = yes
+
+
 BOOTMAGIC_ENABLE = no       # Virtual DIP switch configuration(+1000)
 MOUSEKEY_ENABLE = yes       # Mouse keys(+4700)
 EXTRAKEY_ENABLE = yes       # Audio control and System control(+450)
@@ -17,6 +21,3 @@ UNICODE_ENABLE = no         # Unicode
 BLUETOOTH_ENABLE = no       # Enable Bluetooth with the Adafruit EZ-Key HID
 AUDIO_ENABLE = no           # Audio output on port C6
 FAUXCLICKY_ENABLE = no      # Use buzzer to emulate clicky switches
-
-DEFAULT_FOLDER = handwired/onekey/blackpill_f411
-LAYOUTS = ortho_1x1

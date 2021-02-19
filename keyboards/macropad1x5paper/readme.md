@@ -1,8 +1,6 @@
-# BDN9
+# macropad1x5 paper version
 
-![BDN9](https://cdn.shopify.com/s/files/1/1851/5125/products/image_bd8d9423-950e-4aad-bea5-665d896f879a_530x@2x.jpg?v=1547909493)
-
-A macropad with one rotary encoder to the left and four normal keys.
+A macropad with one rotary encoder to the left and four normal keys. This is the code for the prototype made from cardboard.
 
 Keyboard Maintainer: [lstubbig](https://github.com/lstubbig)  
 Hardware Supported: Pro Micro, Elite-C, Proton C

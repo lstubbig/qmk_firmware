@@ -1,4 +1,4 @@
-#include "macropad1x5.h"
+#include "macropad1x5paper.h"
 
 void eeconfig_init_kb(void) {
 #ifdef BACKLIGHT_ENABLE
