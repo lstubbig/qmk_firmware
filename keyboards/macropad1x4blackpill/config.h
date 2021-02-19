@@ -30,9 +30,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MATRIX_COLS 4
 #define DIODE_DIRECTION COL2ROW
 
-#define MATRIX_COL_PINS { A5, A4, C14, C13 }
-#define MATRIX_ROW_PINS { A7 }
-#define UNUSED_PINS { B0, B1, B2, B3, B4, B5, B10, B13, B15, A0, A1, A2, A3, A6, A8, A9, A10, A11, A12, A15, C15 }
+#define MATRIX_COL_PINS { A7, A4, C14, C13 }
+#define MATRIX_ROW_PINS { B0 }
+#define UNUSED_PINS { B1, B2, B3, B4, B5, B10, B13, B15, A0, A1, A2, A3, A6, A8, A9, A10, A11, A12, A15, C15 }
 
 #define BACKLIGHT_PIN           A0
 #define BACKLIGHT_PWM_DRIVER    PWMD5
