@@ -1,4 +1,4 @@
-/* Copyright 2020 CMM.Studio Freather
+/* Copyright 2021 Christopher Courtney, aka Drashna Jael're  (@drashna) <drashna@live.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,15 +19,15 @@
 #include "config_common.h"
 
 /* USB Device descriptor parameter */
-#define VENDOR_ID       0x434D
-#define PRODUCT_ID      0x534B
+#define VENDOR_ID       0x5054
+#define PRODUCT_ID      0xBB91
 #define DEVICE_VER      0x0001
-#define MANUFACTURER    CMM.Studio
-#define PRODUCT         Saka68
+#define MANUFACTURER    Phase Studio
+#define PRODUCT         Titan 65
 
 /* key matrix size */
 #define MATRIX_ROWS 5
-#define MATRIX_COLS 17
+#define MATRIX_COLS 16
 
 /*
  * Keyboard Matrix Assignments
@@ -39,9 +39,13 @@
  *                  ROW2COL = ROW = Anode (+), COL = Cathode (-, marked on diode)
  *
  */
-#define MATRIX_ROW_PINS { D1, D0, B0, F6, F7 }
-#define MATRIX_COL_PINS { D4, D6, D7, B4, B5, B6, C6, F5, F4, F1, F0, B1, B2, B3, D2, D3, D5 }
+#define MATRIX_ROW_PINS { B4, B5, B6, C6, F7 }
+#define MATRIX_COL_PINS { B0, B1, B2, B3, B7, D0, D1, D2, D3, D5, F0, F1, C7, F4, F5, F6 }
 
 #define DIODE_DIRECTION COL2ROW
 
-#define DEBOUNCE 5
+#define RGB_DI_PIN E6
+#define DRIVER_LED_TOTAL 67
+#define RGB_MATRIX_KEYPRESSES // reacts to keypresses
+#define RGB_DISABLE_WHEN_USB_SUSPENDED false // turn off effects when suspended
+#define RGB_MATRIX_MAXIMUM_BRIGHTNESS 150 // limits maximum brightness of LEDs to 200 out of 255. If not defined maximum brightness is set to 255
