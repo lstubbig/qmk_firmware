@@ -1,0 +1,12 @@
+{
+  "name": "macropad1x4blackpill",
+  "vendorId": "0xfeed",
+  "productId": "0x1135",
+  "lighting": "none",
+  "matrix": { "rows": 1, "cols": 4 },
+  "layouts": {
+    "keymap": [
+      ["0,0", "0,1", "0,2", "0.3"]
+    ]
+  }
+}

@@ -1,0 +1,9 @@
+VIA_ENABLE = yes
+
+# features not supported by via
+LEADER_ENABLE = no
+FAUXCLICKY_ENABLE = no
+MIDI_ENABLE = no 
+BLUETOOTH_ENABLE = no 
+KEY_LOCK_ENABLE = no 
+TERMINAL_ENABLE = no
