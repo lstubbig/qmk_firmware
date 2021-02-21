@@ -23,8 +23,8 @@ enum tap_dances {
 enum oled_test_modes {
     // Modes between TEST_FIRST and TEST_LAST (inclusive) can be switched with a keypress.
     TEST_FIRST,
-    TEST_LOGO = TEST_FIRST,
-    TEST_LAYER,
+    TEST_LAYER = TEST_FIRST,
+    TEST_LOGO,
     TEST_CHARACTERS,
     TEST_ALL_ON,
     TEST_FRAME,
@@ -258,9 +258,6 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
 
 void oled_task_user(void) {
     switch (test_mode) {
-        case TEST_LOGO:
-            test_logo();
-            break;
         case TEST_LAYER:
             test_logo();
             oled_write_P(PSTR("      Layer: "), false);
@@ -277,6 +274,9 @@ void oled_task_user(void) {
                     oled_write_ln_P(PSTR("Hello there."), false);
             }
             break;
+        case TEST_LOGO:
+            test_logo();
+            break;
         case TEST_CHARACTERS:
             test_characters();
             break;
@@ -287,7 +287,8 @@ void oled_task_user(void) {
             test_frame();
             break;
         case TEST_ALL_OFF:
-            oled_clear();
+            // oled_clear(); // only clears top left
+            test_fill(0x00, 0x00, 1);
             break;
         case TEST_FILL_HORZ_0:
             test_fill(0x55, 0x55, 1);
