@@ -24,8 +24,8 @@ enum oled_test_modes {
     // Modes between TEST_FIRST and TEST_LAST (inclusive) can be switched with a keypress.
     TEST_FIRST,
     TEST_LOGO = TEST_FIRST,
-    TEST_LAYER,
     TEST_CHARACTERS,
+    TEST_SLOW_UPDATE,
     TEST_ALL_ON,
     TEST_FRAME,
     TEST_ALL_OFF,
@@ -51,6 +51,9 @@ static bool     scrolling;
 static uint8_t  scrolling_speed;
 static bool     need_update = true;
 static bool     draw_always;
+static bool     update_speed_test;
+static uint32_t update_speed_start_timer;
+static uint16_t update_speed_count;
 static bool     restart_test;
 
 static void stop_scrolling(void) {
@@ -133,7 +136,12 @@ static void dance_oled_finished(qk_tap_dance_state_t *state, void *user_data) {
                 need_update  = true;
             } else {
                 // triple tap - toggle update speed test
-                // change to other layer?
+                update_speed_test = !update_speed_test;
+                if (update_speed_test) {
+                    stop_scrolling();
+                    update_speed_start_timer = timer_read32();
+                    update_speed_count       = 0;
+                }
             }
             break;
         case 4:
@@ -149,17 +157,8 @@ static void dance_oled_finished(qk_tap_dance_state_t *state, void *user_data) {
 
 qk_tap_dance_action_t tap_dance_actions[] = {[TD_OLED] = ACTION_TAP_DANCE_FN(dance_oled_finished)};
 
-enum layer_names {
-    _Media,
-    _Oled,
-    _Backlight,
-    _Blaaa
-};
-
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [_Media] =      LAYOUT_ortho_1x4(MO(_Oled), KC_VOLD,      KC_VOLU,  KC_MPLY),
-    [_Oled] =       LAYOUT_ortho_1x4(_______,   TD(TD_OLED),  KC_A,     RESET),
-    [_Backlight] =  LAYOUT_ortho_1x4(_______,   BL_DEC,       BL_INC,   BL_BRTG)
+    LAYOUT_ortho_1x4(TD(TD_OLED), KC_1, KC_2, RESET),
 };
 
 // `bool oled_is_dirty(void)` does not exist at the moment
@@ -233,7 +232,7 @@ static char get_test_char(uint8_t char_index) { return char_index + '!'; }
 
 // Fill the whole screen with distinct characters (if the display is large enough to show more than 94 characters
 // at once, the sequence is repeated the second time with inverted characters).
-__attribute__((unused)) static void test_characters(void) {
+static void test_characters(void) {
     uint8_t cols       = oled_max_chars();
     uint8_t rows       = oled_max_lines();
     bool    invert     = false;
@@ -249,6 +248,115 @@ __attribute__((unused)) static void test_characters(void) {
     }
 }
 
+// Test screen updating after drawing a single character or pixel.
+void test_slow_update(void) {
+    static uint8_t  phase, x, y, char_index, first_char;
+    static uint16_t timer;
+    static uint16_t delay = 500;
+
+    if (restart_test) {
+        // Initialize all state variables before starting the test.
+        restart_test = false;
+        phase        = 0;
+        x            = 0;
+        y            = 0;
+        char_index   = 0;
+        first_char   = 0;
+        delay        = 500;
+    } else {
+        // Wait for the specified time between steps.
+        if (timer_elapsed(timer) < delay) {
+            return;
+        }
+    }
+
+    timer = timer_read();
+    switch (phase) {
+        case 0:
+            // Phase 0: fill the whole screen with mostly distinct characters, one character at a time.  Here the
+            // inversion trick is not used, so that the frame which is drawn in subsequent phases would not be
+            // overlapped by the inverted character background.
+            oled_set_cursor(x, y);
+            oled_write_char(get_test_char(char_index), false);
+            if (++char_index >= TEST_CHAR_COUNT) {
+                char_index = 0;
+            }
+            if (++x >= oled_max_chars()) {
+                x = 0;
+                if (++y >= oled_max_lines()) {
+                    // The whole screen was filled - start the next phase.
+                    ++phase;
+                    x = y = 0;
+                }
+            }
+            delay = 250;
+            break;
+
+        case 1:
+            // Phase 1: draw a line along the left edge of the screen, one pixel at a time.
+            oled_write_pixel(x, y, true);
+            if (y < pixel_height() - 1) {
+                ++y;
+            } else {
+                // The bottom left corner is reached - start the next phase.
+                ++phase;
+                ++x;
+            }
+            delay = 50;
+            break;
+
+        case 2:
+            // Phase 2: draw a line along the bottom edge of the screen, one pixel at a time.
+            oled_write_pixel(x, y, true);
+            if (x < pixel_width() - 1) {
+                ++x;
+            } else {
+                // The bottom right corner was reached - start the next phase.
+                ++phase;
+                --y;
+            }
+            delay = 50;
+            break;
+
+        case 3:
+            // Phase 3: draw a line along the right edge of the screen, one pixel at a time.
+            oled_write_pixel(x, y, true);
+            if (y > 0) {
+                --y;
+            } else {
+                // The top right corner was reached - start the next phase.
+                ++phase;
+                --x;
+            }
+            delay = 50;
+            break;
+
+        case 4:
+            // Phase 4: draw a line along the top edge of the screen, one pixel at a time.
+            oled_write_pixel(x, y, true);
+            if (x > 0) {
+                --x;
+            } else {
+                // The top left corner was reached - start the next phase.
+                ++phase;
+            }
+            delay = 50;
+            break;
+
+        default:
+            // Restart from phase 0, but change the first character of the sequence to make screen updates visible.
+            if (++first_char >= TEST_CHAR_COUNT) {
+                first_char = 0;
+            }
+            phase      = 0;
+            x          = 0;
+            y          = 0;
+            char_index = first_char;
+            delay      = 500;
+            break;
+    }
+}
+
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
     oled_scroll_set_area(0, 3);
     // oled_scroll_set_speed(scrolling_speed);
@@ -257,28 +365,49 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
 }
 
 void oled_task_user(void) {
+    if (update_speed_test) {
+        // Speed test mode - wait for screen update completion.
+        if (!oled_dirty) {
+            // Update statistics and send the measurement result to the console.
+            update_speed_count++;
+            if (update_speed_count % 256 == 0) {
+                uprintf("OLED: %u updates, %lu ms\n", update_speed_count, timer_elapsed32(update_speed_start_timer));
+            }
+
+            // Toggle between the "all on" and "all off" states and trigger the screen update again.
+            if (test_mode == TEST_ALL_ON) {
+                test_mode = TEST_ALL_OFF;
+            } else {
+                test_mode = TEST_ALL_ON;
+            }
+            need_update = true;
+        }
+    }
+
+    // The sample implementation of oled_task_user() in the documentation redraws the image after every call, relying on
+    // the fact that drawing functions check whether the output actually changes anything in the image, and set dirty
+    // bits only when something has actually changed.  However, redrawing the image only when some of the underlying
+    // data has changed is more efficient.  Make it possible to test both modes here.
+    if (!draw_always || update_speed_test) {
+        // Draw the image only when the `need_update` flag is set, except for the "slow update" test.
+        // This mode is also forced when the screen update speed test is performed.
+        if (!need_update) {
+            if (test_mode != TEST_SLOW_UPDATE) {
+                return;
+            }
+        }
+        need_update = false;
+    }
+
     switch (test_mode) {
         case TEST_LOGO:
             test_logo();
             break;
-        case TEST_LAYER:
-            test_logo();
-            oled_write_P(PSTR("      Layer: "), false);
-            //switch (get_highest_layer(layer_state)) {
-            switch (get_highest_layer(layer_state)) {
-                case _Oled:
-                    oled_write_P(PSTR("Oled\n"), false);
-                    break;
-                case _Media:
-                    oled_write_P(PSTR("Media\n"), false);
-                    break;
-                default:
-                    // Or use the write_ln shortcut over adding '\n' to the end of your string
-                    oled_write_ln_P(PSTR("Hello there."), false);
-            }
-            break;
         case TEST_CHARACTERS:
             test_characters();
+            break;
+        case TEST_SLOW_UPDATE:
+            test_slow_update();
             break;
         case TEST_ALL_ON:
             oled_write_raw_P(fill_ff, sizeof(fill_ff));
@@ -287,7 +416,13 @@ void oled_task_user(void) {
             test_frame();
             break;
         case TEST_ALL_OFF:
-            oled_clear();
+            // `oled_clear()` is faster, but cannot be used with `draw_always`, because it does not check the previous
+            // content of the buffer and always marks the whole buffer as dirty.
+            if (update_speed_test) {
+                oled_clear();
+            } else {
+                test_fill(0x00, 0x00, 1);
+            }
             break;
         case TEST_FILL_HORZ_0:
             test_fill(0x55, 0x55, 1);
@@ -310,6 +445,7 @@ void oled_task_user(void) {
         case TEST_FILL_CHECKERBOARD_4:
             test_fill(0x0f, 0xf0, 4);
             break;
+
         case TEST_DRAW_ALWAYS_ON:
             oled_write_P(PSTR("Draw Always"), false);
             break;
@@ -319,21 +455,7 @@ void oled_task_user(void) {
     }
 }
 
-// void oled_task_user(void) {
-//     test_logo();
-
-//     // Host Keyboard Layer Status
-//     // oled_set_cursor(0, 3);
-//     oled_write_P(PSTR("      Layer: "), false);
-//     switch (get_highest_layer(layer_state)) {
-//         case _Oled:
-//             oled_write_P(PSTR("OLED\n"), false);
-//             break;
-//         case _Media:
-//             oled_write_P(PSTR("Media\n"), false);
-//             break;
-//         default:
-//             // Or use the write_ln shortcut over adding '\n' to the end of your string
-//             oled_write_ln_P(PSTR("Hello there."), false);
-//     }
-// }
+void keyboard_post_init_user(void) {
+    // Console messages are used for update speed test results
+    debug_enable = true;
+}
