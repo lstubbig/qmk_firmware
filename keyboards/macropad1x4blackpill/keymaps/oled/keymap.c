@@ -1,4 +1,5 @@
-/* Copyright 2020 Sergey Vlasov <sigprof@gmail.com>
+/* Copyright 2021 Leon Stubbig, based on example with
+ * Copyright 2020 Sergey Vlasov <sigprof@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,21 +21,21 @@ enum tap_dances {
     TD_OLED,
 };
 
+enum my_keycodes {
+  INC_SCROLL_SPEED = SAFE_RANGE,
+  DEC_SCROLL_SPEED
+};
+
 enum oled_test_modes {
     // Modes between TEST_FIRST and TEST_LAST (inclusive) can be switched with a keypress.
     TEST_FIRST,
     TEST_LAYER = TEST_FIRST,
+    TEST_SCROLLSPEED,
     TEST_LOGO,
     TEST_CHARACTERS,
     TEST_ALL_ON,
     TEST_FRAME,
     TEST_ALL_OFF,
-    TEST_FILL_HORZ_0,
-    TEST_FILL_HORZ_1,
-    TEST_FILL_VERT_0,
-    TEST_FILL_VERT_1,
-    TEST_FILL_CHECKERBOARD_1,
-    TEST_FILL_CHECKERBOARD_2,
     TEST_FILL_CHECKERBOARD_4,
     TEST_LAST = TEST_FILL_CHECKERBOARD_4,
 
@@ -52,7 +53,9 @@ static uint8_t  scrolling_speed;
 static bool     need_update = true;
 static bool     draw_always;
 static bool     restart_test;
+char            scroll_speed_char[1];
 
+// control scrolling
 static void stop_scrolling(void) {
     if (scrolling) {
         oled_scroll_off();
@@ -60,6 +63,7 @@ static void stop_scrolling(void) {
     }
 }
 
+// tap dance for oled control
 static void dance_oled_finished(qk_tap_dance_state_t *state, void *user_data) {
     switch (state->count) {
         case 1:
@@ -82,7 +86,7 @@ static void dance_oled_finished(qk_tap_dance_state_t *state, void *user_data) {
                 stop_scrolling();
                 oled_init(rotation);
             } else {
-                // single tap - step through test modes
+                // single tap - step through modes
                 if (test_mode < TEST_LAST) {
                     ++test_mode;
                 } else {
@@ -132,8 +136,7 @@ static void dance_oled_finished(qk_tap_dance_state_t *state, void *user_data) {
                 restart_test = true;
                 need_update  = true;
             } else {
-                // triple tap - toggle update speed test
-                // change to other layer?
+                // triple tap 
             }
             break;
         case 4:
@@ -158,7 +161,7 @@ enum layer_names {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_Media] =      LAYOUT_ortho_1x4(MO(_Oled), KC_VOLD,      KC_VOLU,  KC_MPLY),
-    [_Oled] =       LAYOUT_ortho_1x4(_______,   TD(TD_OLED),  KC_A,     RESET),
+    [_Oled] =       LAYOUT_ortho_1x4(_______,   TD(TD_OLED),  DEC_SCROLL_SPEED, INC_SCROLL_SPEED),
     [_Backlight] =  LAYOUT_ortho_1x4(_______,   BL_DEC,       BL_INC,   BL_BRTG)
 };
 
@@ -250,7 +253,7 @@ __attribute__((unused)) static void test_characters(void) {
 }
 
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
-    oled_scroll_set_area(0, 3);
+    oled_scroll_set_area(3, 3);
     // oled_scroll_set_speed(scrolling_speed);
     oled_scroll_set_speed(0);
     return rotation;
@@ -274,6 +277,13 @@ void oled_task_user(void) {
                     oled_write_ln_P(PSTR("Hello there."), false);
             }
             break;
+        case TEST_SCROLLSPEED:
+            test_logo();
+            sprintf(scroll_speed_char, "%d", scrolling_speed);
+            oled_write_P(PSTR("     Scroll Speed: "), false);
+            oled_write_P(PSTR(scroll_speed_char), false);
+            oled_write_P(PSTR("\n"), false);
+            break;
         case TEST_LOGO:
             test_logo();
             break;
@@ -290,24 +300,6 @@ void oled_task_user(void) {
             // oled_clear(); // only clears top left
             test_fill(0x00, 0x00, 1);
             break;
-        case TEST_FILL_HORZ_0:
-            test_fill(0x55, 0x55, 1);
-            break;
-        case TEST_FILL_HORZ_1:
-            test_fill(0xaa, 0xaa, 1);
-            break;
-        case TEST_FILL_VERT_0:
-            test_fill(0xff, 0x00, 1);
-            break;
-        case TEST_FILL_VERT_1:
-            test_fill(0x00, 0xff, 1);
-            break;
-        case TEST_FILL_CHECKERBOARD_1:
-            test_fill(0x55, 0xaa, 1);
-            break;
-        case TEST_FILL_CHECKERBOARD_2:
-            test_fill(0x33, 0xcc, 2);
-            break;
         case TEST_FILL_CHECKERBOARD_4:
             test_fill(0x0f, 0xf0, 4);
             break;
@@ -320,21 +312,27 @@ void oled_task_user(void) {
     }
 }
 
-// void oled_task_user(void) {
-//     test_logo();
-
-//     // Host Keyboard Layer Status
-//     // oled_set_cursor(0, 3);
-//     oled_write_P(PSTR("      Layer: "), false);
-//     switch (get_highest_layer(layer_state)) {
-//         case _Oled:
-//             oled_write_P(PSTR("OLED\n"), false);
-//             break;
-//         case _Media:
-//             oled_write_P(PSTR("Media\n"), false);
-//             break;
-//         default:
-//             // Or use the write_ln shortcut over adding '\n' to the end of your string
-//             oled_write_ln_P(PSTR("Hello there."), false);
-//     }
-// }
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case DEC_SCROLL_SPEED:
+            if (record->event.pressed) {
+                if (scrolling_speed < 7) {
+                    scrolling_speed = (scrolling_speed + 1);
+                    stop_scrolling();
+                    oled_scroll_set_speed(scrolling_speed);
+                }
+            }
+            return true;
+        case INC_SCROLL_SPEED:
+            if (record->event.pressed) {
+                if (scrolling_speed > 0) {
+                scrolling_speed = (scrolling_speed - 1);
+                stop_scrolling();
+                oled_scroll_set_speed(scrolling_speed);
+                }
+            }
+            return true;
+        default:
+            return true; // Process all other keycodes normally
+    }
+}
